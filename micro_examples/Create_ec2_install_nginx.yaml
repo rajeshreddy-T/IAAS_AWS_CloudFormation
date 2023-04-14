@@ -1,0 +1,30 @@
+---
+Resources:
+  EC2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-0c55b159cbfafe1f0
+      KeyName: your-key-pair
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: true
+          DeviceIndex: 0
+          DeleteOnTermination: true
+          GroupSet:
+            - sg-1234567890abcdef0 # replace with your security group ID
+          SubnetId: subnet-1234567890abcdef0 # replace with your subnet ID in the default VPC
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          sudo amazon-linux-extras install nginx1.12 -y
+          sudo systemctl start nginx
+          sudo systemctl enable nginx
+          curl -sL https://rpm.nodesource.com/setup_16.x | sudo bash -
+          sudo yum install -y nodejs
+  InstancePublicIP:
+    Value: !GetAtt EC2Instance.PublicIp
+    Description: The public IP address of the EC2 instance.
+
+Outputs:
+  InstancePublicIP:
+    Value: !Ref InstancePublicIP

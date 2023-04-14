@@ -1,0 +1,35 @@
+
+# In this template, we define a single resource of type AWS::EC2::SecurityGroup to create a new security group for a web server. We set the GroupDescription and VpcId properties, and use the SecurityGroupIngress property to allow incoming traffic on ports 22, 80, and 443.
+
+# For each ingress rule, we specify the IpProtocol, FromPort, ToPort, and CidrIp properties. In this example, we allow all IP addresses (0.0.0.0/0) to connect to the instance on ports 22, 80, and 443. You can modify these rules to restrict access to specific IP addresses or ranges.
+
+# To use this template, you can save it to a file with a .yaml extension and then use the AWS CloudFormation console or AWS CLI to create a stack from the template. Once the stack is created, you can use the security group ID in the GroupSet property of an EC2 instance resource to associate the security group with an EC2 instance.
+---
+Resources:
+  WebServerSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupName: my-webserver-sg
+      GroupDescription: 'Security group for web server'
+      VpcId: vpc-1234567890abcdef0 # replace with your VPC ID
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+
+Outputs:
+  SecurityGroupId:
+    Value: !Ref WebServerSecurityGroup
+    Description: The ID of the newly created security group.
+
+
+

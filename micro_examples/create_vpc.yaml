@@ -1,0 +1,35 @@
+# we create new outputs to output the VPC details. We use the !Ref function to reference the MyVPC resource and set its value as the output of the VpcId resource. We also use the !GetAtt function to get the CidrBlock, EnableDnsSupport, and EnableDnsHostnames attributes of the MyVPC resource, and set them as the outputs of the VpcCidrBlock, VpcDnsSupport, and VpcDnsHostnames resources, respectively.
+
+# For the VpcTags output, we use the !Join function to concatenate the tags associated with the VPC as a comma-separated string, and set the resulting string as the value of the VpcTags output.
+
+# After creating the CloudFormation stack from this template, you can view the VPC details by going to the CloudFormation console, selecting the stack, and viewing the outputs tab. You should see the VpcId, VpcCidrBlock, VpcDnsSupport, VpcDnsHostnames, and VpcTags outputs with the corresponding details of the newly created VPC.
+
+
+---
+Resources:
+  MyVPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: '10.0.0.0/16'
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: rajesh_test_vpc
+
+Outputs:
+  VpcId:
+    Value: !Ref MyVPC
+    Description: The ID of the newly created VPC.
+  VpcCidrBlock:
+    Value: !GetAtt MyVPC.CidrBlock
+    Description: The CIDR block of the newly created VPC.
+  VpcDnsSupport:
+    Value: !GetAtt MyVPC.EnableDnsSupport
+    Description: Indicates whether the DNS resolution is supported for the VPC.
+  VpcDnsHostnames:
+    Value: !GetAtt MyVPC.EnableDnsHostnames
+    Description: Indicates whether the DNS hostname resolution is supported for the VPC.
+  VpcTags:
+    Value: !Join [',', !GetAtt MyVPC.Tags]
+    Description: The tags associated with the newly created VPC.
