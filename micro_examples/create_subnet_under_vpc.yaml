@@ -1,0 +1,37 @@
+# we first define a parameter VpcId of type AWS::EC2::VPC::Id, 
+# which specifies the ID of the VPC where the subnet will be created.
+
+# We then define a resource MySubnet of type AWS::EC2::Subnet, 
+# which creates a subnet under the specified VPC with the CIDR block of 10.0.1.0/24. 
+# We also set the AvailabilityZone property to specify the desired availability zone for the subnet, 
+# and set a tag for the subnet with the key of Name and the value of my-subnet.
+
+# Finally, we create a new output SubnetId to output the ID of the newly created subnet, 
+# using the !Ref function to reference the MySubnet resource.
+
+# After creating the CloudFormation stack from this template, 
+# you can view the subnet ID by going to the CloudFormation console, 
+# selecting the stack, and viewing the outputs tab. 
+# You should see the SubnetId output with the ID of the newly created subnet.
+
+---
+Parameters:
+  VpcId:
+    Type: "AWS::EC2::VPC::Id"
+    Description: ID of the VPC where the subnet will be created.
+
+Resources:
+  MySubnet:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref VpcId
+      CidrBlock: "10.0.1.0/24"
+      AvailabilityZone: "us-east-1a" # Replace with the desired availability zone
+      Tags:
+        - Key: Name
+          Value: my-subnet
+
+Outputs:
+  SubnetId:
+    Value: !Ref MySubnet
+    Description: The ID of the newly created subnet.
