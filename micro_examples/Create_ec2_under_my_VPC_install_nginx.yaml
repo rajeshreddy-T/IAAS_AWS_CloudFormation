@@ -1,0 +1,57 @@
+Parameters:
+  VpcId:
+    Type: 'AWS::EC2::VPC::Id'
+    Description: 'The ID of the VPC where the EC2 instance will be launched'
+    Default: vpc-0123456789abcdefg
+  SubnetId:
+    Type: 'AWS::EC2::Subnet::Id'
+    Description: 'The ID of the subnet where the EC2 instance will be launched'
+    Default: vpc-0123456789abcdefg
+
+
+Resources:
+  MyEC2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: ami-0c94855ba95c71c99 # Replace with your desired Amazon Machine Image (AMI) ID
+      InstanceType: t2.micro
+      KeyName: my-key-pair # Replace with your desired SSH key pair name
+      NetworkInterfaces:
+        - DeviceIndex: 0
+          AssociatePublicIpAddress: true
+          SubnetId: !Ref SubnetId
+          GroupSet:
+            - !Ref WebServerSecurityGroup
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum update -y
+          yum install nginx nodejs -y
+          service nginx start
+
+  WebServerSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: 'Security group for web server'
+      VpcId: !Ref VpcId # Add this line to reference the VPC ID parameter
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+
+Outputs:
+  PublicIPAddress:
+    Description: 'The public IP address of the EC2 instance'
+    Value: !GetAtt MyEC2Instance.PublicIp
+  InstanceID:
+    Description: 'The ID of the EC2 instance'
+    Value: !Ref MyEC2Instance
