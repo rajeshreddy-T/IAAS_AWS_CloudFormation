@@ -24,7 +24,7 @@ Resources:
           git clone https://github.com/rajeshreddy-T/git-workflow-test-with-node-and-ec2.git
           cd git-workflow-test-with-node-and-ec2
           npm install
-          node server.js
+          node app.js
 Outputs:
   InstancePublicIP:
     Value: !GetAtt EC2Instance.PublicIp
